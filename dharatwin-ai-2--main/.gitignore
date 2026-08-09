@@ -1,0 +1,56 @@
+# Python virtual environments and bytecode
+.venv/
+venv/
+node_modules/
+dist/
+__pycache__/
+*.py[cod]
+
+# Environment secrets
+.env
+
+# Test and tooling output
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Generated runtime data and trained models
+data/raw/**/*.csv
+data/raw/**/*.json
+data/raw/**/*.geojson
+data/raw/**/*.tif
+data/raw/**/*.tiff
+data/raw/**/*.nc
+data/processed/*
+!data/processed/.gitkeep
+data/reports/*
+!data/reports/.gitkeep
+models/*.joblib
+models/*.pkl
+data/database/*.db
+data/database/*.db-shm
+data/database/*.db-wal
+models/*
+!models/.gitkeep
+reports/ml/*
+!reports/ml/.gitkeep
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Added for security
+.env.*
+!.env.example
+*.pyo
+.next/
+out/
+build/
+*.log
+*.sqlite
+*.sqlite3
+coverage/
+*.pem
+*.key
