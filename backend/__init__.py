@@ -1,2 +1,0 @@
-"""ClimaTwin-IN backend package."""
-
