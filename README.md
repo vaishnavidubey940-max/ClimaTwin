@@ -1,109 +1,75 @@
-# ClimaTwin-IN
+# ClimateTwin-IN 
+PROJECT TILTLE- ClimateTwin-IN - AI Powered Digital Twin of India's Climate
 
-Hackathon MVP for an AI-powered climate digital twin of India. The initial pilot is configurable and defaults to Madhya Pradesh.
+Team Name- CLIMATE CORE          	
 
-## Phase 1 status
+Problem Statement-
 
-Phase 1 provides the Python project scaffold and a minimal Flask service. Phase 2 adds safe, inactive MOSDAC/IMD adapter boundaries and local-file discovery. No external request is made by the application, and no weather observations, predictions, or climate claims are included yet.
+India is facing increasingly frequent floods, droughts, heatwaves, and unpredictable rainfall due to climate change.
 
-## Windows PowerShell setup
+Existing weather systems may not provide highly accurate local predictions or clearly show how climate changes could affect different regions. This creates challenges for farmers, government agencies, disaster management teams, researchers, and planners when preparing for future conditions.
 
-```powershell
-cd "D:\0815(1)\23\ClimaTwin-IN"
+ClimaTwin-IN addresses this problem by creating an AI-powered Digital Twin of India's Climate using data from ISRO satellites, IMD weather stations, and historical climate records.
+
+The system monitors climate conditions, predicts rainfall and temperature, and allows users to test "What-If" scenarios to support better decision-making and climate preparedness.
+
+Solution Overview
+
+ClimaTwin-IN combines climate data, AI-based prediction, interactive visualization, and scenario simulation into a single web platform.
+
+Key Features
+ Combines ISRO satellite images and IMD rainfall/weather data. <br>
+ Automatically collects and updates climate data. <br>
+ Uses AI (Random Forest) for short-term rainfall and temperature predictions.<br>
+ Displays climate information through easy-to-understand maps and charts.<br>
+ Provides a "What-If" simulator to test different climate scenarios.<br>
+ Converts complex climate data into clear visual insights.<br>
+ Supports farmers, disaster management teams, students, researchers, and planners.<br>
+ Provides a simple web interface accessible through a normal laptop and web browser.<br>
+
+Live Demonstration Link: Coming Soon
+
+Technology Stack
+Based on the project architecture and features:
+Python| Flask| FastAPI| Uvicorn| Pandas| Random Forest| Scikit-learn| SQLite| HTML5| CSS3| Vite| JavaScript| Leaflet| Chart.js
+
+Team Members Name-           	
+Vaishnavi Dubey (Team leader)-Frontend <br>
+Mritunjai Jha (Team member)-UI/UX <br>
+Bhumika Gupta (Team member-Backend <br>
+Apeksha Gupta	(Team member)-Database <br>
+
+Setup instruction
+
+1. Clone the Repository
+git clone <your-repository-link>
+cd dharatwin-ai-2
+
+2. Backend Setup
+   
+Create a Python virtual environment:
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-Copy-Item .env.example .env
-python -m backend.app
-```
 
-## Frontend development server (port 3000)
+Install the required Python dependencies:
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 
-Run the Flask API on port 5000, then in a second VS Code terminal run:
+Start the FastAPI backend server:
+.\.venv\Scripts\python.exe -m uvicorn backend.fastapi_app:app --port 5000 --reload
 
-```powershell
-npm install
-npm run dev
-```
+The backend will run at:
+http://127.0.0.1:5000
 
-Open `http://127.0.0.1:3000/`. Vite serves the `frontend/` directory and
-proxies `/api/*` to the Flask backend at `http://127.0.0.1:5000`, so the
-dashboard can be developed directly with hot reload while keeping the
-existing backend and SQLite services unchanged.
+3. Frontend Setup
+   
+Open a new terminal in VS Code.
+Start the frontend server:
 
-Open `http://127.0.0.1:5000/api/health` for the application check, and `http://127.0.0.1:5000/api/data/status` for source readiness. The starter configuration uses `DATA_MODE=LOCAL`.
+cd "C:\Users\apeks\Documents\New folder\dharatwin-ai-2--main"
+.\.venv\Scripts\python.exe -m http.server 3000 --directory frontend
 
-To run the Phase 1 test:
+The frontend will be available at:
+http://localhost:3000
 
-```powershell
-python -m pytest
-```
+Open this URL in your browser.
 
-## Configuration
-
-Copy `.env.example` to `.env`, then set the pilot state, data mode, host, and port there. Keep credentials out of Git; MOSDAC and IMD values are deliberately empty placeholders for future official integrations.
-
-## Local data (Phase 2)
-
-Put real, developer-provided CSV, JSON, or GeoJSON files under `data/raw/mosdac/` or `data/raw/imd/`. The current local loader only discovers and reads these files; cleaning, validation, and normalization begin in Phase 3. It never generates weather observations.
-
-## Local processing (Phase 3)
-
-Place a real local dataset below `data/raw/` and run this in Windows PowerShell:
-
-```powershell
-python scripts/process_data.py --file data/raw/local/climate.csv --source LOCAL
-```
-
-The pipeline maps known headers, records unsafe/unknown mappings, validates and cleans explicit invalidities, normalizes timestamps, preserves unit uncertainty, and writes a processed CSV to `data/processed/` plus an audit report in `data/reports/`. It only accepts files below the configured raw-data directory and does not call MOSDAC or IMD.
-
-## SQLite storage (Phase 4)
-
-Initialize the idempotent local database, then import a Phase 3 CSV:
-
-```powershell
-python scripts/init_database.py
-python scripts/import_processed_data.py --file data/processed/processed_climate_<timestamp>.csv
-```
-
-Stored records are always labelled `observed`. Read-only APIs are `/api/database/status`, `/api/locations`, `/api/observations/latest`, and `/api/observations/history?location_id=<id>&limit=100`. The predictions and scenario tables are schema preparation only; this phase creates no AI output.
-
-## Interactive map and history (Phase 5)
-
-Start Flask with `python -m backend.app`, then open `http://127.0.0.1:5000/`. The dashboard uses the Flask APIs only, Leaflet/OpenStreetMap for observed point locations, and Chart.js for history. `/api/map-data` returns observed GeoJSON; sparse observations are not interpolated into a synthetic surface.
-
-## Random Forest climate AI (Phase 6)
-
-Inspect and train from the actual SQLite observations:
-
-```powershell
-python scripts/inspect_training_data.py
-python scripts/train_models.py
-python scripts/evaluate_models.py
-```
-
-Training is chronological and uses shifted/lagged features to prevent future leakage. Temperature and rainfall models are trained separately only when the real data passes the sufficiency check. Metrics are written to `reports/ml/`, models to `models/<target>/`, and prediction requests use `POST /api/predict`. With insufficient data, the system returns `INSUFFICIENT TRAINING DATA` and leaves the model unavailable; it never fabricates rows, metrics, or confidence values.
-
-## What-If scenarios (Phase 9)
-
-Run the experimental scenario lab through `POST /api/scenarios/run` with a `location_id` and supported changes: `temperature_delta` (-5 to +5 °C), `rainfall_change_percent` (-50 to +50%), and `humidity_delta` (-30 to +30 percentage points). These are software/UX bounds, not scientific climate limits. Outputs are stored separately in `scenario_runs`, labelled `experimental_scenario`, and never overwrite observed data.
-
-## Final integrated dashboard (Phase 10)
-
-The single dashboard at `http://127.0.0.1:5000/` combines observed climate, map/history, AI model status, Digital Twin state, What-If Climate Lab, and system status. Aggregated APIs are `/api/dashboard/<location_id>` and `/api/system/status`. LOCAL mode is always shown as local/historical data; MOSDAC and IMD remain `NOT_CONFIGURED` until official adapters are configured.
-
-## API integration slots (Phase 11)
-
-MOSDAC and IMD are deliberately disabled. `.env.example` contains empty
-placeholders for each provider's future URL, credentials, and dataset ID;
-`.env` is ignored by Git and must never contain committed secrets. With the
-default `DATA_MODE=LOCAL`, the application reads only developer-provided local
-files and continues through processing, SQLite, prediction, digital-twin, and
-scenario layers without making external requests. `/api/data/status` and
-`/api/system/status` report both providers as `NOT_CONFIGURED` (or
-`CONFIGURED_NOT_ACTIVATED` if all placeholders are filled, while requests
-remain disabled). Future integration is isolated to the provider adapters:
-official authentication, request construction, dataset selection, response
-mapping, and error handling can be added there without rewriting the existing
-DataManager or downstream phases.
